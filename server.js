@@ -9,7 +9,7 @@ app.get("/api/video", (req, res) => {
   if (!url) return res.status(400).json({ error: "missing url" });
 
   // yt-dlp command: fetch best video URL
-  exec(`yt-dlp -f "best[ext=mp4]" -g ${url}`, { timeout: 20000 }, (err, stdout, stderr) => {
+  exec(`/usr/local/bin/yt-dlp -f "best[ext=mp4]" -g ${url}`, { timeout: 20000 }, (err, stdout, stderr) => {
     if (err) {
       return res.status(500).json({ error: stderr || err.message });
     }
