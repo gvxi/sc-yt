@@ -1,11 +1,11 @@
-# Use Python slim base
-FROM python:3.11-slim
+FROM python:3.11-bullseye
 
 # Install dependencies
-RUN apt-get update && apt-get install -y ffmpeg curl git
+RUN apt-get update && \
+    apt-get install -y ffmpeg curl git build-essential libffi-dev libssl-dev
 
 # Upgrade pip and install yt-dlp
-RUN pip install --upgrade yt-dlp
+RUN pip install --upgrade pip yt-dlp
 
 # Install Node
 RUN apt-get install -y nodejs npm
@@ -18,7 +18,6 @@ COPY package*.json ./
 RUN npm install --production
 COPY server.js ./
 
-# Expose port
 EXPOSE 3000
 
 # Start Node server
