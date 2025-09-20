@@ -8,8 +8,11 @@ app.get("/api/video", (req, res) => {
   const url = req.query.url;
   if (!url) return res.status(400).json({ error: "missing url" });
 
-  // Run yt-dlp via Python with robust options
-  const command = `python3 -m yt_dlp -f "best[ext=mp4]" -g --no-check-certificate "${url}"`;
+  // Use yt-dlp with real browser User-Agent and robust options
+  const userAgent =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36";
+
+  const command = `python3 -m yt_dlp -f "best[ext=mp4]" -g --no-check-certificate --user-agent "${userAgent}" "${url}"`;
 
   exec(command, { timeout: 30000 }, (err, stdout, stderr) => {
     if (err) {
