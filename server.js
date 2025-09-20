@@ -8,8 +8,8 @@ app.get("/api/video", (req, res) => {
   const url = req.query.url;
   if (!url) return res.status(400).json({ error: "missing url" });
 
-  // yt-dlp command: fetch best video URL
-  exec(`/usr/local/bin/yt-dlp -f "best[ext=mp4]" -g ${url}`, { timeout: 20000 }, (err, stdout, stderr) => {
+  // Use python -m yt_dlp to avoid path issues
+  exec(`python3 -m yt_dlp -f "best[ext=mp4]" -g ${url}`, { timeout: 20000 }, (err, stdout, stderr) => {
     if (err) {
       return res.status(500).json({ error: stderr || err.message });
     }
