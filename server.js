@@ -8,17 +8,20 @@ app.get("/api/video", (req, res) => {
   const url = req.query.url;
   if (!url) return res.status(400).json({ error: "missing url" });
 
-  // Use python -m yt_dlp to avoid path issues
-  exec(
-  `python3 -m yt_dlp -f "best[ext=mp4]" -g --no-check-certificate ${url}`,
-  { timeout: 30000 },
-  (err, stdout, stderr) => {
-    if (err) return res.status(500).json({ error: stderr || err.message });
+  // Run yt-dlp via Python with robust options
+  const command = `python3 -m yt_dlp -f "best[ext=mp4]" -g --no-check-certificate "${url}"`;
+
+  exec(command, { timeout: 30000 }, (err, stdout, stderr) => {
+    if (err) {
+      return res.status(500).json({ error: stderr || err.message });
+    }
+
     const lines = stdout.trim().split(/\r?\n/).filter(Boolean);
     const videoUrl = lines[0] || null;
+
     res.json({ videoUrl, all: lines });
-  }
-);
+  });
+});
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`yt-dlp API listening on ${port}`));
+app.listen(port, () => console.log(`yt-dlp API listening on port ${port}`));
